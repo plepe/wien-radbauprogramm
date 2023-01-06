@@ -16,25 +16,28 @@ fetch('https://www.wien.gv.at/verkehr/radfahren/bauen/programm/')
       process.exit(1)
     }
 
-    const trs = tables[0].getElementsByTagName('tr')
-    const list = Array.from(trs).map(row => {
-      const tds = row.getElementsByTagName('td')
-      if (!tds.length) {
-        return
-      }
+    const list = []
+    Array.from(tables).forEach(table => {
+      const trs = table.getElementsByTagName('tr')
+      Array.from(trs).forEach(row => {
+        const tds = row.getElementsByTagName('td')
+        if (!tds.length) {
+          return
+        }
 
-      const entry = {}
-      Array.from(tds).forEach((td, col) => {
-        entry[cols[col]] = td.textContent
+        const entry = {}
+        Array.from(tds).forEach((td, col) => {
+          entry[cols[col]] = td.textContent
+        })
+
+        entry.bezirk = entry.bezirk
+          .split(/ und /g)
+          .map(v => parseInt(v.substr(0, v.length - 1)))
+
+        entry.year = year
+
+        list.push(entry)
       })
-
-      entry.bezirk = entry.bezirk
-        .split(/ und /g)
-        .map(v => parseInt(v.substr(0, v.length - 1)))
-
-      entry.year = year
-
-      return entry
     })
 
     console.log(JSON.stringify(list, null, '  '))
