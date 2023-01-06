@@ -56,6 +56,8 @@ function init () {
 
         programm.update(entry)
       })
+
+      process.exit(0)
     }
   )
 }
