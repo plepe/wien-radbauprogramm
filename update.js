@@ -35,6 +35,19 @@ function init () {
           programm.insert(entry)
         }
       })
+
+      const results = programm.find({
+        year: { $eq: 2022 },
+        ts: { $lt: ts },
+        status: { $ne: 'verschwunden' }
+      })
+
+      results.forEach(entry => {
+        entry.status = 'verschwunden'
+        entry.ts = ts
+
+        programm.update(entry)
+      })
     }
   )
 }
