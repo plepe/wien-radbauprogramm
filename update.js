@@ -24,13 +24,20 @@ function init () {
         })
 
         if (results.length) {
-          entry = results[0]
-          entry.ts = ts
+          e = results[0]
+          e.ts = ts
+          if (e.status != entry.status) {
+            e.status = entry.status
+            e.log.push({ ts, status: entry.status })
+          }
 
-          programm.update(entry)
+          programm.update(e)
         } else {
           entry.ts = ts
           entry.created = ts
+          entry.log = [
+            { ts, status: entry.status }
+          ]
 
           programm.insert(entry)
         }
@@ -44,6 +51,7 @@ function init () {
 
       results.forEach(entry => {
         entry.status = 'verschwunden'
+        entry.log.push({ ts, status: 'verschwunden' })
         entry.ts = ts
 
         programm.update(entry)
