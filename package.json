@@ -1,0 +1,16 @@
+{
+  "name": "wien-radbauprogramm",
+  "version": "0.0.0",
+  "description": "Analyzes the Radbauprogramm of Stadt Wien",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plepe/wien-radbauprogramm.git"
+  },
+  "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/plepe/wien-radbauprogramm/issues"
+  },
+  "homepage": "https://github.com/plepe/wien-radbauprogramm#readme"
+}
