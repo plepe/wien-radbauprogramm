@@ -14,8 +14,10 @@
   },
   "homepage": "https://github.com/plepe/wien-radbauprogramm#readme",
   "dependencies": {
+    "async": "^3.2.4",
     "iconv-lite": "^0.6.3",
     "jsdom": "^20.0.3",
-    "lokijs": "^1.5.12"
+    "lokijs": "^1.5.12",
+    "range": "^0.0.3"
   }
 }
