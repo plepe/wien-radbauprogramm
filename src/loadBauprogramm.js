@@ -2,7 +2,6 @@ const JSDOM = require('jsdom').JSDOM
 const iconv = require('iconv-lite')
 
 const cols = ['bezirk', 'ort', 'measure', 'status']
-const year = 2022
 
 module.exports = function loadBauprogramm (url, callback) {
   fetch(url)
@@ -10,6 +9,17 @@ module.exports = function loadBauprogramm (url, callback) {
     .then(body => {
       body = iconv.decode(new Buffer(body), 'ISO-8859-15').toString()
       const dom = new JSDOM(body)
+
+      const h1 = dom.window.document.getElementsByTagName('h1')
+      if (!h1.length) {
+        return callback(new Error('No header found'))
+      }
+      const m = h1[0].textContent.match(/Bauprogramm Radverkehrsanlagen (\d{4})/)
+      if (!m) {
+        return callback(new Error('Can\'t parse header'))
+      }
+      const year = parseInt(m[1])
+
       const tables = dom.window.document.getElementsByTagName('table')
 
       if (!tables.length) {

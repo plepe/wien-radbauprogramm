@@ -22,6 +22,7 @@ function init () {
         process.exit(1)
       }
 
+      const year = list[0].year
       list.forEach(entry => {
         const results = programm.find({
           ort: { $eq: entry.ort },
@@ -49,7 +50,7 @@ function init () {
       })
 
       const results = programm.find({
-        year: { $eq: 2022 },
+        year: { $eq: year },
         ts: { $lt: ts },
         status: { $ne: 'verschwunden' }
       })
