@@ -32,7 +32,7 @@ function init () {
       const year = list[0].year
       checkChanges(list, programm,
         () => {
-          const years = firstRun ? range(firstYear, year) : getUnfinishedYears(programm)
+          const years = firstRun ? range(firstYear, year) : getUnfinishedYears(programm, year)
           async.each(years,
             (year, done) => {
               loadBauprogramm('https://www.wien.gv.at/verkehr/radfahren/bauen/programm/' + year + '.html',
