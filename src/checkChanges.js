@@ -13,6 +13,7 @@ module.exports = function checkChanges (list, programm, callback) {
       e.ts = ts
       if (e.status != entry.status) {
         e.status = entry.status
+        e.lastChange = ts
         e.log.push({ ts, status: entry.status })
         console.log('CHANGE', year, entry.ort, entry.status)
       }
@@ -40,6 +41,7 @@ module.exports = function checkChanges (list, programm, callback) {
     entry.status = 'verschwunden'
     entry.log.push({ ts, status: 'verschwunden' })
     entry.ts = ts
+    entry.lastChange = ts
 
     programm.update(entry)
   })
