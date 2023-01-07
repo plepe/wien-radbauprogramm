@@ -1,5 +1,7 @@
-const loadBauprogramm = require('./src/loadBauprogramm')
 const LokiJS = require('lokijs')
+
+const loadBauprogramm = require('./src/loadBauprogramm')
+const checkChanges = require('./src/checkChanges')
 
 const db = new LokiJS('data/data.db', {
   autoload: true,
@@ -13,8 +15,6 @@ function init () {
     programm = db.addCollection('entries')
   }
 
-  const ts = new Date().toISOString()
-
   loadBauprogramm('https://www.wien.gv.at/verkehr/radfahren/bauen/programm/',
     (err, list) => {
       if (err) {
@@ -22,48 +22,11 @@ function init () {
         process.exit(1)
       }
 
-      const year = list[0].year
-      list.forEach(entry => {
-        const results = programm.find({
-          ort: { $eq: entry.ort },
-          year: { $eq: entry.year }
-        })
-
-        if (results.length) {
-          e = results[0]
-          e.ts = ts
-          if (e.status != entry.status) {
-            e.status = entry.status
-            e.log.push({ ts, status: entry.status })
-          }
-
-          programm.update(e)
-        } else {
-          entry.ts = ts
-          entry.created = ts
-          entry.log = [
-            { ts, status: entry.status }
-          ]
-
-          programm.insert(entry)
+      checkChanges(list, programm,
+        () => {
+          process.exit(0)
         }
-      })
-
-      const results = programm.find({
-        year: { $eq: year },
-        ts: { $lt: ts },
-        status: { $ne: 'verschwunden' }
-      })
-
-      results.forEach(entry => {
-        entry.status = 'verschwunden'
-        entry.log.push({ ts, status: 'verschwunden' })
-        entry.ts = ts
-
-        programm.update(entry)
-      })
-
-      process.exit(0)
+      )
     }
   )
 }
