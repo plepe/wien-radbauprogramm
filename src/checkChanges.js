@@ -14,6 +14,7 @@ module.exports = function checkChanges (list, programm, callback) {
       if (e.status != entry.status) {
         e.status = entry.status
         e.log.push({ ts, status: entry.status })
+        console.log('CHANGE', year, entry.ort, entry.status)
       }
 
       programm.update(e)
@@ -24,6 +25,7 @@ module.exports = function checkChanges (list, programm, callback) {
         { ts, status: entry.status }
       ]
 
+      console.log('NEW', year, entry.ort, entry.status)
       programm.insert(entry)
     }
   })
