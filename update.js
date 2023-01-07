@@ -17,6 +17,11 @@ function init () {
 
   loadBauprogramm('https://www.wien.gv.at/verkehr/radfahren/bauen/programm/',
     (err, list) => {
+      if (err) {
+        console.error(err)
+        process.exit(1)
+      }
+
       list.forEach(entry => {
         const results = programm.find({
           ort: { $eq: entry.ort },

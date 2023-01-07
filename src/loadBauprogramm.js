@@ -13,8 +13,7 @@ module.exports = function loadBauprogramm (url, callback) {
       const tables = dom.window.document.getElementsByTagName('table')
 
       if (!tables.length) {
-        console.error('No tables found')
-        process.exit(1)
+        return callback(new Error('No tables found'))
       }
 
       const list = []
