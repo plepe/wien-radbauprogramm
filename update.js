@@ -19,14 +19,25 @@ function init () {
     (err, list) => {
       if (err) {
         console.error(err)
-        process.exit(1)
+        close(1)
       }
 
       checkChanges(list, programm,
         () => {
-          process.exit(0)
+          close(0)
         }
       )
     }
   )
+}
+
+function close (exitCode) {
+  db.close((err) => {
+    if (err) {
+      console.error(err)
+      exitCode = 1
+    }
+
+    process.exit(exitCode)
+  })
 }
