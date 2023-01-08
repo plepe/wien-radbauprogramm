@@ -20,6 +20,8 @@ const mapping = {
   },
   'status': {
     field: 'field_status',
+    load: v => status[v.target_id],
+    save: v => { return { target_id: status_nid[v] } },
     single: true
   },
   'year': {
@@ -43,6 +45,8 @@ const mapping = {
 
 let bezirke = {}
 let bezirke_nid = {}
+let status = {}
+let status_nid = {}
 
 module.exports = {
   load: (db, callback) => {
@@ -54,6 +58,13 @@ module.exports = {
         data.forEach(e => {
           bezirke[e.nid[0].value] = parseInt(e.field_id[0].value)
           bezirke_nid[e.field_id[0].value] = e.nid[0].value
+        })
+        done()
+      }),
+      (done) => drupal.loadRestExport('rest/status', {}, (err, data) => {
+        data.forEach(e => {
+          status[e.tid[0].value] = e.name[0].value
+          status_nid[e.name[0].value] = e.tid[0].value
         })
         done()
       }),
