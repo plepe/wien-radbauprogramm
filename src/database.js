@@ -69,7 +69,7 @@ module.exports = {
         done()
       }),
       (done) => drupal.loadRestExport('rest/bauprogramm', {}, (err, data) => {
-        callback(null, data.map(node => {
+        converted = data.map(node => {
           const entry = {}
           Object.keys(mapping).forEach(k => {
             const d = mapping[k]
@@ -89,8 +89,8 @@ module.exports = {
           })
           programm.insert(entry)
           return entry
-        }))
-        done()
+        })
+        callback(null, converted)
       })
     ])
   },
