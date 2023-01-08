@@ -13,8 +13,8 @@ module.exports = function checkChanges (list, programm, callback) {
     })
 
     if (results.length) {
+      results.forEach(e => e.found = true)
       e = results[0]
-      e.found = true
       if (e.status != entry.status) {
         e.lastChange = ts
         e.log.push(ts.substr(0, 10) + ' ' + e.status + '-> ' + entry.status)
