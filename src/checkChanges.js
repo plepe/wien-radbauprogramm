@@ -14,7 +14,7 @@ module.exports = function checkChanges (list, programm, callback) {
       if (e.status != entry.status) {
         e.status = entry.status
         e.lastChange = ts
-        e.log.push({ ts, status: entry.status })
+        e.log.push(ts.substr(0, 10) + ' ' + e.status + '-> ' + entry.status)
         console.log('CHANGE', year, entry.ort, entry.status)
       }
 
@@ -23,7 +23,7 @@ module.exports = function checkChanges (list, programm, callback) {
       entry.ts = ts
       entry.created = ts
       entry.log = [
-        { ts, status: entry.status }
+        ts.substr(0, 10) + ' gefunden'
       ]
 
       console.log('NEW', year, entry.ort, entry.status)
