@@ -26,11 +26,6 @@ const mapping = {
     field: 'field_jahr',
     single: true
   },
-  'ts': {
-    field: 'field_ts',
-    single: true,
-    save: v => v ? { value: v.substr(0, 19) + 'Z' } : null
-  },
   'lastChange': {
     field: 'field_status_change',
     single: true,

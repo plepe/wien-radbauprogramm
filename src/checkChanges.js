@@ -14,18 +14,19 @@ module.exports = function checkChanges (list, programm, callback) {
 
     if (results.length) {
       e = results[0]
-      e.ts = ts
+      e.found = true
       if (e.status != entry.status) {
         e.lastChange = ts
         e.log.push(ts.substr(0, 10) + ' ' + e.status + '-> ' + entry.status)
         e.status = entry.status
         console.log('CHANGE', year, entry.ort, entry.status)
+        programm.update(e)
+        database.update(e, done)
+      } else {
+        done()
       }
-
-      programm.update(e)
-      database.update(e, done)
     } else {
-      entry.ts = ts
+      entry.found = true
       entry.created = ts
       entry.log = [
         ts.substr(0, 10) + ' gefunden'
@@ -35,22 +36,23 @@ module.exports = function checkChanges (list, programm, callback) {
       programm.insert(entry)
       database.update(entry, done)
     }
+  }, (err) => {
+    if (err) { return callback(err) }
+
+    const results = programm.find({
+      year: { $eq: year },
+      found: { $ne: true },
+      status: { $ne: 'verschwunden' }
+    })
+
+    async.each(results, (entry, done) => {
+      e.log.push(ts.substr(0, 10) + ' ' + entry.status + '-> verschwunden')
+      entry.status = 'verschwunden'
+      entry.lastChange = ts
+
+      console.log('GONE', year, entry.ort, entry.status)
+      programm.update(entry)
+      database.update(entry, done)
+    }, callback)
   })
-
-  const results = programm.find({
-    year: { $eq: year },
-    ts: { $lt: ts },
-    status: { $ne: 'verschwunden' }
-  })
-
-  results.forEach(entry => {
-    entry.status = 'verschwunden'
-    entry.log.push({ ts, status: 'verschwunden' })
-    entry.ts = ts
-    entry.lastChange = ts
-
-    programm.update(entry)
-  })
-
-  callback()
 }
