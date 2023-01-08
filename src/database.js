@@ -77,13 +77,16 @@ module.exports = {
               if (d.load) {
                 entry[k] = node[d.field].length ? d.load(node[d.field][0]) : null
               } else {
-                entry[k] = node[d.field].length ? node[d.field][0].value : null
+                let v = node[d.field].length ? node[d.field][0].value : null
+                entry[k] = typeof v === 'string' ? v.replace(/\r\n/g, '\n') : v
               }
             } else {
               if (d.load) {
                 entry[k] = node[d.field].map(v => d.load(v))
               } else {
-                entry[k] = node[d.field].map(v => v.value)
+                entry[k] = node[d.field].map(v => {
+                  return typeof v.value === 'string' ? v.value.replace(/\r\n/g, '\n') : v.value
+                })
               }
             }
           })
