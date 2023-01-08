@@ -1,0 +1,7 @@
+{
+  "drupal": {
+    "user": "importer",
+    "pass": "PASSWORD",
+    "url": "https://example.com/"
+  }
+}

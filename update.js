@@ -3,16 +3,19 @@ const async = require('async')
 const range = require('range').range
 
 const loadBauprogramm = require('./src/loadBauprogramm')
+const database = require('./src/database')
 const checkChanges = require('./src/checkChanges')
 const getUnfinishedYears = require('./src/getUnfinishedYears')
 
 const firstYear = 2003
 
-const db = new LokiJS('data/data.db', {
-  autoload: true,
-  autoloadCallback: init,
-  autosave: true
-})
+//const db = new LokiJS('data/data.db', {
+//  autoload: true,
+//  autoloadCallback: init,
+//  autosave: true
+//})
+const db = new LokiJS()
+database.load(db, init)
 
 function init () {
   let firstRun = false
