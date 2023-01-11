@@ -31,7 +31,7 @@ const mapping = {
   'lastChange': {
     field: 'field_status_change',
     single: true,
-    save: v => v ? { value: v.substr(0, 19) + 'Z' } : null
+    save: v => v ? { value: v.substr(0, 10) } : null
   },
   'log': {
     field: 'field_log',
