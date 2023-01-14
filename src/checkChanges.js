@@ -36,6 +36,10 @@ module.exports = function checkChanges (list, programm, callback) {
         ts.substr(0, 10) + ' gefunden (' + entry.status + ')'
       ]
 
+      if (entry.status !== 'in Planung') {
+        entry.lastChange = ts
+      }
+
       console.log('NEW', year, entry.ort, entry.status)
       programm.insert(entry)
       database.update(entry, done)
