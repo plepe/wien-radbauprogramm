@@ -13,6 +13,10 @@ module.exports = function checkChanges (list, programm, callback) {
     })
 
     if (results.length) {
+      if (results.length > 1) {
+	console.log('duplicate', results.map(r => r.nid))
+      }
+
       results.forEach(e => e.found = true)
       e = results[0]
       if (e.status != entry.status) {
