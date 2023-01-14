@@ -21,7 +21,12 @@ const mapping = {
   'status': {
     field: 'field_status',
     load: v => status[v.target_id],
-    save: v => { return { target_id: status_nid[v] } },
+    save: v => {
+      if (!(v in status_nid)) {
+	throw new Error('Status ' + v + ' unbekannt')
+      }
+
+      return { target_id: status_nid[v] } },
     single: true
   },
   'year': {
