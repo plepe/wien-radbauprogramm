@@ -33,7 +33,7 @@ module.exports = function checkChanges (list, programm, callback) {
       entry.found = true
       entry.created = ts
       entry.log = [
-        ts.substr(0, 10) + ' gefunden'
+        ts.substr(0, 10) + ' gefunden (' + entry.status + ')'
       ]
 
       console.log('NEW', year, entry.ort, entry.status)
