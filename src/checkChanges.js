@@ -2,6 +2,11 @@ const async = require('async')
 
 const database = require('./database')
 
+const checkFields = {
+  status: 'Status',
+  measure: 'Maßnahme'
+}
+
 module.exports = function checkChanges (list, programm, callback) {
   const ts = new Date().toISOString()
   const year = list[0].year
@@ -17,13 +22,24 @@ module.exports = function checkChanges (list, programm, callback) {
 	console.log('duplicate', results.map(r => r.nid))
       }
 
+      let changed = false
       results.forEach(e => e.found = true)
       e = results[0]
+      for (const field in checkFields) {
+	if (e[field] != entry[field]) {
+	  e[field] = entry[field]
+	  e.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + e.status + ' -> ' + entry.status)
+	  console.log('CHANGE', year, entry[field], entry.ort, entry.status)
+	  changed = true
+	}
+      }
+
       if (e.status != entry.status) {
         e.lastChange = ts
-        e.log.push(ts.substr(0, 10) + ' ' + e.status + '-> ' + entry.status)
-        e.status = entry.status
-        console.log('CHANGE', year, entry.ort, entry.status)
+	changed = true
+      }
+
+      if (changed) {
         programm.update(e)
         database.update(e, done)
       } else {
