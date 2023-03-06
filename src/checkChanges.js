@@ -25,6 +25,12 @@ module.exports = function checkChanges (list, programm, callback) {
       let changed = false
       results.forEach(e => e.found = true)
       e = results[0]
+
+      if (e.status != entry.status) {
+        e.lastChange = ts
+	changed = true
+      }
+
       for (const field in checkFields) {
 	if (e[field] != entry[field]) {
 	  e[field] = entry[field]
@@ -32,11 +38,6 @@ module.exports = function checkChanges (list, programm, callback) {
 	  console.log('CHANGE', year, entry[field], entry.ort, entry.status)
 	  changed = true
 	}
-      }
-
-      if (e.status != entry.status) {
-        e.lastChange = ts
-	changed = true
       }
 
       if (changed) {
