@@ -33,8 +33,8 @@ module.exports = function checkChanges (list, programm, callback) {
 
       for (const field in checkFields) {
 	if (e[field] != entry[field]) {
+	  e.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + e[field] + ' -> ' + entry[field])
 	  e[field] = entry[field]
-	  e.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + e.status + ' -> ' + entry.status)
 	  console.log('CHANGE', year, entry[field], entry.ort, entry.status)
 	  changed = true
 	}
