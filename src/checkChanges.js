@@ -7,8 +7,9 @@ const checkFields = {
   measure: 'Maßnahme'
 }
 
+const ts = new Date().toISOString()
+
 module.exports = function checkChanges (list, programm, callback) {
-  const ts = new Date().toISOString()
   const year = list[0].year
   const newProjects = []
 
@@ -29,18 +30,8 @@ module.exports = function checkChanges (list, programm, callback) {
       })
       const current = results[0]
 
-      if (current.status !== entry.status) {
-        current.lastChange = ts
+      if (compareValues(current, entry, year)) {
         changed = true
-      }
-
-      for (const field in checkFields) {
-        if (current[field] !== entry[field]) {
-          current.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + current[field] + ' -> ' + entry[field])
-          current[field] = entry[field]
-          console.log('CHANGE', year, entry[field], entry.ort, entry.status)
-          changed = true
-        }
       }
 
       if (changed) {
@@ -91,4 +82,24 @@ module.exports = function checkChanges (list, programm, callback) {
       }, done)
     ], callback)
   })
+}
+
+function compareValues (current, entry, year) {
+  let changed = false
+
+  if (current.status !== entry.status) {
+    current.lastChange = ts
+    changed = true
+  }
+
+  for (const field in checkFields) {
+    if (current[field] !== entry[field]) {
+      current.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + current[field] + ' -> ' + entry[field])
+      current[field] = entry[field]
+      console.log('CHANGE', year, entry[field], entry.ort, entry.status)
+      changed = true
+    }
+  }
+
+  return changed
 }
