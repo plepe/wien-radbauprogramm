@@ -131,7 +131,7 @@ module.exports = {
 
     delete node.nid
 
-    node.title = [{value: entry.ort.replace(/\n/g, ' – ')}]
+    node.title = [{ value: entry.ort.replace(/\n/g, ' – ') }]
 
     drupal.nodeSave(entry.nid, node, {}, (err, result) => {
       if (err) { return callback(err) }

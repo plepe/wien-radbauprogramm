@@ -1,5 +1,5 @@
 const async = require('async')
-const stringSimilarity = require("string-similarity")
+const stringSimilarity = require('string-similarity')
 
 const database = require('./database')
 
