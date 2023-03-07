@@ -10,6 +10,7 @@ const checkFields = {
 module.exports = function checkChanges (list, programm, callback) {
   const ts = new Date().toISOString()
   const year = list[0].year
+  const newProjects = []
 
   async.eachSeries(list, (entry, done) => {
     const results = programm.find({
@@ -49,19 +50,8 @@ module.exports = function checkChanges (list, programm, callback) {
         done()
       }
     } else {
-      entry.found = true
-      entry.created = ts
-      entry.log = [
-        ts.substr(0, 10) + ' gefunden (' + entry.status + ')'
-      ]
-
-      if (entry.status !== 'in Planung') {
-        entry.lastChange = ts
-      }
-
-      console.log('NEW', year, entry.ort, entry.status)
-      programm.insert(entry)
-      database.update(entry, done)
+      newProjects.push(entry)
+      done()
     }
   }, (err) => {
     if (err) { return callback(err) }
@@ -72,14 +62,33 @@ module.exports = function checkChanges (list, programm, callback) {
       status: { $ne: 'verschwunden' }
     })
 
-    async.each(results, (entry, done) => {
-      entry.log.push(ts.substr(0, 10) + ' Status geändert: ' + entry.status + ' -> verschwunden')
-      entry.status = 'verschwunden'
-      entry.lastChange = ts
+    async.waterfall([
+      // vanished
+      (done) => async.each(results, (entry, done) => {
+        entry.log.push(ts.substr(0, 10) + ' Status geändert: ' + entry.status + ' -> verschwunden')
+        entry.status = 'verschwunden'
+        entry.lastChange = ts
 
-      console.log('GONE', year, entry.ort, entry.status)
-      programm.update(entry)
-      database.update(entry, done)
-    }, callback)
+        console.log('GONE', year, entry.ort, entry.status)
+        programm.update(entry)
+        database.update(entry, done)
+      }, done),
+      // newProjects
+      (done) => async.each(newProjects, (entry, done) => {
+        entry.found = true
+        entry.created = ts
+        entry.log = [
+          ts.substr(0, 10) + ' gefunden (' + entry.status + ')'
+        ]
+
+        if (entry.status !== 'in Planung') {
+          entry.lastChange = ts
+        }
+
+        console.log('NEW', year, entry.ort, entry.status)
+        programm.insert(entry)
+        database.update(entry, done)
+      }, done)
+    ], callback)
   })
 }
