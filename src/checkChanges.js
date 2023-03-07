@@ -63,7 +63,7 @@ module.exports = function checkChanges (list, programm, callback) {
           if (matches.bestMatch.rating > 0.9) {
             const newProject = newProjects[matches.bestMatchIndex]
             newProjects.splice(matches.bestMatchIndex, 1)
-            entry.log.push(ts.substr(0, 10) + ' Ort geändert: ' + entry.ort + ' -> ' + newProject.ort)
+            entry.log.push(ts.substr(0, 10) + ' Ort geändert')
             entry.ort = newProject.ort
             console.log('RENAMED', year, entry.ort, 'rating=' + matches.bestMatch.rating)
 
