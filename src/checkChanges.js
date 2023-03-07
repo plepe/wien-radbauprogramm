@@ -1,4 +1,5 @@
 const async = require('async')
+const stringSimilarity = require("string-similarity")
 
 const database = require('./database')
 
@@ -56,6 +57,24 @@ module.exports = function checkChanges (list, programm, callback) {
     async.waterfall([
       // vanished
       (done) => async.each(results, (entry, done) => {
+        // try to find a new project with a similar name
+        if (newProjects.length) {
+          const matches = stringSimilarity.findBestMatch(entry.ort, newProjects.map(p => p.ort))
+          if (matches.bestMatch.rating > 0.9) {
+            const newProject = newProjects[matches.bestMatchIndex]
+            newProjects.splice(matches.bestMatchIndex, 1)
+            entry.log.push(ts.substr(0, 10) + ' Ort geändert: ' + entry.ort + ' -> ' + newProject.ort)
+            entry.ort = newProject.ort
+            console.log('RENAMED', year, entry.ort, 'rating=' + matches.bestMatch.rating)
+
+            compareValues(entry, newProject, year)
+
+            programm.update(entry)
+            database.update(entry, done)
+            return
+          }
+        }
+
         entry.log.push(ts.substr(0, 10) + ' Status geändert: ' + entry.status + ' -> verschwunden')
         entry.status = 'verschwunden'
         entry.lastChange = ts
