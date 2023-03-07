@@ -2,7 +2,9 @@
   "name": "wien-radbauprogramm",
   "version": "0.0.0",
   "description": "Analyzes the Radbauprogramm of Stadt Wien",
-  "scripts": {},
+  "scripts": {
+    "lint": "standard --fix *.js src/*.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plepe/wien-radbauprogramm.git"
@@ -20,5 +22,8 @@
     "jsdom": "^20.0.3",
     "lokijs": "^1.5.12",
     "range": "^0.0.3"
+  },
+  "devDependencies": {
+    "standard": "^17.0.0"
   }
 }
