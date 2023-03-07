@@ -56,7 +56,7 @@ module.exports = function checkChanges (list, programm, callback) {
 
     async.waterfall([
       // vanished
-      (done) => async.each(results, (entry, done) => {
+      (done) => async.eachSeries(results, (entry, done) => {
         // try to find a new project with a similar name
         if (newProjects.length) {
           const matches = stringSimilarity.findBestMatch(entry.ort, newProjects.map(p => p.ort))
@@ -84,7 +84,7 @@ module.exports = function checkChanges (list, programm, callback) {
         database.update(entry, done)
       }, done),
       // newProjects
-      (done) => async.each(newProjects, (entry, done) => {
+      (done) => async.eachSeries(newProjects, (entry, done) => {
         entry.found = true
         entry.created = ts
         entry.log = [
