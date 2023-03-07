@@ -26,25 +26,25 @@ module.exports = function checkChanges (list, programm, callback) {
       results.forEach(e => {
         e.found = true
       })
-      const e = results[0]
+      const current = results[0]
 
-      if (e.status !== entry.status) {
-        e.lastChange = ts
+      if (current.status !== entry.status) {
+        current.lastChange = ts
         changed = true
       }
 
       for (const field in checkFields) {
-        if (e[field] !== entry[field]) {
-          e.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + e[field] + ' -> ' + entry[field])
-          e[field] = entry[field]
+        if (current[field] !== entry[field]) {
+          current.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + current[field] + ' -> ' + entry[field])
+          current[field] = entry[field]
           console.log('CHANGE', year, entry[field], entry.ort, entry.status)
           changed = true
         }
       }
 
       if (changed) {
-        programm.update(e)
-        database.update(e, done)
+        programm.update(current)
+        database.update(current, done)
       } else {
         done()
       }
