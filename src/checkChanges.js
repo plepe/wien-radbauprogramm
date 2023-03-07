@@ -73,7 +73,7 @@ module.exports = function checkChanges (list, programm, callback) {
     })
 
     async.each(results, (entry, done) => {
-      e.log.push(ts.substr(0, 10) + ' ' + entry.status + '-> verschwunden')
+      entry.log.push(ts.substr(0, 10) + ' Status geändert: ' + entry.status + ' -> verschwunden')
       entry.status = 'verschwunden'
       entry.lastChange = ts
 
