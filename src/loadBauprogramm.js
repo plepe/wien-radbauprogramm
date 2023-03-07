@@ -7,7 +7,7 @@ module.exports = function loadBauprogramm (url, callback) {
   fetch(url)
     .then(req => req.arrayBuffer())
     .then(body => {
-      body = iconv.decode(new Buffer(body), 'ISO-8859-15').toString()
+      body = iconv.decode(Buffer.from(body), 'ISO-8859-15').toString()
       const dom = new JSDOM(body)
 
       const h1 = dom.window.document.getElementsByTagName('h1')

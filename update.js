@@ -9,11 +9,11 @@ const getUnfinishedYears = require('./src/getUnfinishedYears')
 
 const firstYear = 2003
 
-//const db = new LokiJS('data/data.db', {
+// const db = new LokiJS('data/data.db', {
 //  autoload: true,
 //  autoloadCallback: init,
 //  autosave: true
-//})
+// })
 const db = new LokiJS()
 database.load(db, init)
 
@@ -40,7 +40,7 @@ function init () {
             (year, done) => {
               loadBauprogramm('https://www.wien.gv.at/verkehr/radfahren/bauen/programm/' + year + '.html',
                 (err, list) => {
-                  if (err) { return callback(err) }
+                  if (err) { return done(err) }
                   checkChanges(list, programm, done)
                 }
               )

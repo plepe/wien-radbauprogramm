@@ -7,7 +7,7 @@ const db = new LokiJS('data/data.db', {
 })
 
 function init () {
-  let programm = db.getCollection('entries')
+  const programm = db.getCollection('entries')
 
   const results = programm.find({})
   console.log(JSON.stringify(results, null, '  '))

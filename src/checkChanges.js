@@ -19,25 +19,27 @@ module.exports = function checkChanges (list, programm, callback) {
 
     if (results.length) {
       if (results.length > 1) {
-	console.log('duplicate', results.map(r => r.nid))
+        console.log('duplicate', results.map(r => r.nid))
       }
 
       let changed = false
-      results.forEach(e => e.found = true)
-      e = results[0]
+      results.forEach(e => {
+        e.found = true
+      })
+      const e = results[0]
 
-      if (e.status != entry.status) {
+      if (e.status !== entry.status) {
         e.lastChange = ts
-	changed = true
+        changed = true
       }
 
       for (const field in checkFields) {
-	if (e[field] != entry[field]) {
-	  e.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + e[field] + ' -> ' + entry[field])
-	  e[field] = entry[field]
-	  console.log('CHANGE', year, entry[field], entry.ort, entry.status)
-	  changed = true
-	}
+        if (e[field] !== entry[field]) {
+          e.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + e[field] + ' -> ' + entry[field])
+          e[field] = entry[field]
+          console.log('CHANGE', year, entry[field], entry.ort, entry.status)
+          changed = true
+        }
       }
 
       if (changed) {

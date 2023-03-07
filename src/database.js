@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const async = require('async')
 const DrupalRest = require('drupal-rest')
 const config = require('../config.json')
@@ -5,53 +6,54 @@ const config = require('../config.json')
 const drupal = new DrupalRest(config.drupal)
 
 const mapping = {
-  'bezirk': {
+  bezirk: {
     field: 'field_bezirk',
     load: v => bezirke[v.target_id],
-    save: v => { return { target_id: bezirke_nid[v] } },
+    save: v => { return { target_id: bezirke_nid[v] } }
   },
-  'ort': {
+  ort: {
     field: 'field_ort',
     single: true
   },
-  'measure': {
+  measure: {
     field: 'field_massnahme',
     single: true
   },
-  'status': {
+  status: {
     field: 'field_status',
     load: v => status[v.target_id],
     save: v => {
       if (!(v in status_nid)) {
-	throw new Error('Status ' + v + ' unbekannt')
+        throw new Error('Status ' + v + ' unbekannt')
       }
 
-      return { target_id: status_nid[v] } },
+      return { target_id: status_nid[v] }
+    },
     single: true
   },
-  'year': {
+  year: {
     field: 'field_jahr',
     single: true
   },
-  'lastChange': {
+  lastChange: {
     field: 'field_status_change',
     single: true,
     save: v => v ? { value: v.substr(0, 10) } : null
   },
-  'log': {
+  log: {
     field: 'field_log',
-    single: false,
+    single: false
   },
-  'nid': {
+  nid: {
     field: 'nid',
     single: true
   }
 }
 
-let bezirke = {}
-let bezirke_nid = {}
-let status = {}
-let status_nid = {}
+const bezirke = {}
+const bezirke_nid = {}
+const status = {}
+const status_nid = {}
 
 module.exports = {
   load: (db, callback) => {
@@ -60,6 +62,8 @@ module.exports = {
     async.waterfall([
       (done) => drupal.login(done),
       (done) => drupal.loadRestExport('rest/bezirke', {}, (err, data) => {
+        if (err) { return done(err) }
+
         data.forEach(e => {
           bezirke[e.nid[0].value] = parseInt(e.field_id[0].value)
           bezirke_nid[e.field_id[0].value] = e.nid[0].value
@@ -67,6 +71,8 @@ module.exports = {
         done()
       }),
       (done) => drupal.loadRestExport('rest/status', {}, (err, data) => {
+        if (err) { return done(err) }
+
         data.forEach(e => {
           status[e.tid[0].value] = e.name[0].value
           status_nid[e.name[0].value] = e.tid[0].value
@@ -74,7 +80,9 @@ module.exports = {
         done()
       }),
       (done) => drupal.loadRestExport('rest/bauprogramm', {}, (err, data) => {
-        converted = data.map(node => {
+        if (err) { return done(err) }
+
+        const converted = data.map(node => {
           const entry = {}
           Object.keys(mapping).forEach(k => {
             const d = mapping[k]
@@ -82,7 +90,7 @@ module.exports = {
               if (d.load) {
                 entry[k] = node[d.field].length ? d.load(node[d.field][0]) : null
               } else {
-                let v = node[d.field].length ? node[d.field][0].value : null
+                const v = node[d.field].length ? node[d.field][0].value : null
                 entry[k] = typeof v === 'string' ? v.replace(/\r\n/g, '\n') : v
               }
             } else {
@@ -104,12 +112,12 @@ module.exports = {
   },
 
   update (entry, callback) {
-    const node = { type: [ { target_id: 'bauprogramm' } ] }
+    const node = { type: [{ target_id: 'bauprogramm' }] }
     Object.keys(mapping).forEach(k => {
       const d = mapping[k]
 
       if (d.single) {
-        const value = d.save ? [ d.save(entry[k]) ] : [ { value: entry[k] } ]
+        const value = d.save ? [d.save(entry[k])] : [{ value: entry[k] }]
         node[d.field] = value.filter(v => v != null)
       } else {
         if (entry[k]) {
@@ -128,10 +136,12 @@ module.exports = {
     }
 
     drupal.nodeSave(entry.nid, node, {}, (err, result) => {
+      if (err) { return callback(err) }
+
       console.log('saved', result.nid[0].value)
       callback()
     })
   }
 }
 
-    //nodeSave(2, { type: [{target_id: 'bauprogramm'}], title: [{value: 'Foobar'}] }, {}, (err, node) => console.log(node)))
+// nodeSave(2, { type: [{target_id: 'bauprogramm'}], title: [{value: 'Foobar'}] }, {}, (err, node) => console.log(node)))
