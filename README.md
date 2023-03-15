@@ -14,6 +14,11 @@ Extract current bauprogramm as JSON:
 node cli.js
 ```
 
+Extract bauprogramm of 2003 as JSON:
+```
+node cli.js --year=2003
+```
+
 More options:
 ```
 node cli.js --help

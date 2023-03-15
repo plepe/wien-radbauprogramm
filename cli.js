@@ -10,7 +10,15 @@ const parser = new ArgumentParser({
   description: 'Lädt das Radbauprogramm der Stadt Wien'
 })
 
+parser.add_argument('--year', '-y', {
+  help: 'Lade das Bauprogramm eines vergangenen Jahres. Für das aktuelle Jahr muss der Parameter weggelassen werden.',
+  default: null
+})
+
 const args = parser.parse_args()
+if (args.year) {
+  options.year = args.year
+}
 
 loadBauprogramm(options,
   (err, list) => {
