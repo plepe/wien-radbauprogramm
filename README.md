@@ -14,6 +14,11 @@ Extract current bauprogramm as JSON:
 node cli.js
 ```
 
+More options:
+```
+node cli.js --help
+```
+
 ## Create API documentation
 ```
 npm run doc
