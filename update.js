@@ -36,7 +36,7 @@ function init () {
       checkChanges(list, programm,
         () => {
           const years = firstRun ? range(firstYear, year) : getUnfinishedYears(programm, year)
-          async.each(years,
+          async.eachSeries(years,
             (year, done) => {
               loadBauprogramm({ year },
                 (err, list) => {
