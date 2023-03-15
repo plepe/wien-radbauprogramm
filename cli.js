@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const fs = require('fs')
 const ArgumentParser = require('argparse').ArgumentParser
 const Parser = require('@json2csv/plainjs').Parser
 
@@ -9,6 +10,11 @@ const options = {}
 const parser = new ArgumentParser({
   add_help: true,
   description: 'Lädt das Radbauprogramm der Stadt Wien'
+})
+
+parser.add_argument('--output', '-o', {
+  help: 'Schreibe in die angegebene Datei. Wenn leer, Ausgabe an stdout.',
+  default: null
 })
 
 parser.add_argument('--year', '-y', {
@@ -27,6 +33,8 @@ if (args.year) {
   options.year = args.year
 }
 
+const file = args.output
+
 loadBauprogramm(options,
   (err, list) => {
     if (err) {
@@ -36,13 +44,13 @@ loadBauprogramm(options,
 
     switch (args.format) {
       case 'json':
-        console.log(JSON.stringify(list, null, '  '))
+        write(file, JSON.stringify(list, null, '  '))
         break
       case 'csv':
         const parser = new Parser({ withBOM: true })
         list = array2string(list)
         const csv = parser.parse(list)
-        console.log(csv)
+        write(file, csv)
         break
       default:
         console.error('Invalid format')
@@ -62,4 +70,12 @@ function array2string (list) {
         return [k, v]
       }))
     )
+}
+
+function write (file, contents) {
+  if (file) {
+    fs.writeFileSync(file, contents)
+  } else {
+    process.stdout.write(contents)
+  }
 }
