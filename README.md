@@ -8,6 +8,12 @@ cd wien-bauprogramm
 npm install
 ```
 
+## Usage
+Extract current bauprogramm as JSON:
+```sh
+node cli.js
+```
+
 ## Create API documentation
 ```
 npm run doc
