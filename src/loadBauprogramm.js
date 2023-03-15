@@ -3,7 +3,22 @@ const iconv = require('iconv-lite')
 
 const cols = ['bezirk', 'ort', 'measure', 'status']
 
-module.exports = function loadBauprogramm (options, callback) {
+/**
+ * An entry of the Wiener Radbauprogramm
+ * @typedef {Object} Bauprojekt
+ * @property {number[]} bezirk Betroffene Bezirke
+ * @property {string} ort Beschreibung des Ortes
+ * @property {string} measure Geplante Maßnahmen
+ * @property {string} status aktueller Status (e.g. 'in Arbeit', 'fertiggestellt')
+ */
+
+/**
+ * Load the bauprogramm of a specific year from the Wien homepage.
+ * @param {Object} options - Options
+ * @param {Number} [options.year] - Load bauprogramm for a previous year. Omit for the current year.
+ * @returns {Bauprojekt[]}
+ */
+function loadBauprogramm (options, callback) {
   let url = 'https://www.wien.gv.at/verkehr/radfahren/bauen/programm/'
   if ('year' in options) {
     url += options.year + '.html'
@@ -58,3 +73,5 @@ module.exports = function loadBauprogramm (options, callback) {
       callback(null, list)
     })
 }
+
+module.exports = loadBauprogramm
