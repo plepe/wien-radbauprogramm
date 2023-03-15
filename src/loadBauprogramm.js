@@ -1,6 +1,8 @@
 const JSDOM = require('jsdom').JSDOM
 const iconv = require('iconv-lite')
 
+const strasseVomOrt = require('./strasseVomOrt')
+
 const cols = ['bezirk', 'ort', 'measure', 'status']
 
 /**
@@ -8,6 +10,7 @@ const cols = ['bezirk', 'ort', 'measure', 'status']
  * @typedef {Object} Bauprojekt
  * @property {number[]} bezirk Betroffene Bezirke
  * @property {string} ort Beschreibung des Ortes
+ * @property {string[]} strassen Betroffene Straßen (erkannt aus ort)
  * @property {string} measure Geplante Maßnahmen
  * @property {string} status aktueller Status (e.g. 'in Arbeit', 'fertiggestellt')
  */
@@ -65,6 +68,8 @@ function loadBauprogramm (options, callback) {
             .map(v => parseInt(v.substr(0, v.length - 1)))
 
           entry.year = year
+
+          entry.strassen = strasseVomOrt(entry.ort)
 
           list.push(entry)
         })
