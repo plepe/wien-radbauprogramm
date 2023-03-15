@@ -40,6 +40,11 @@ const mapping = {
     single: true,
     save: v => v ? { value: v.substr(0, 10) } : null
   },
+  strassen: {
+    field: 'field_tags',
+    load: v => tags[v.target_id],
+    save: v => { return { target_id: tags_id[v] } }
+  },
   log: {
     field: 'field_log',
     single: false
@@ -54,6 +59,8 @@ const bezirke = {}
 const bezirke_nid = {}
 const status = {}
 const status_nid = {}
+const tags = {}
+const tags_id = {}
 
 module.exports = {
   load: (db, callback) => {
@@ -76,6 +83,15 @@ module.exports = {
         data.forEach(e => {
           status[e.tid[0].value] = e.name[0].value
           status_nid[e.name[0].value] = e.tid[0].value
+        })
+        done()
+      }),
+      (done) => drupal.loadRestExport('rest/taxonomy?type=tags', {}, (err, data) => {
+        if (err) { return done(err) }
+
+        data.forEach(e => {
+          tags[e.tid[0].value] = e.name[0].value
+          tags_id[e.name[0].value] = e.tid[0].value
         })
         done()
       }),
