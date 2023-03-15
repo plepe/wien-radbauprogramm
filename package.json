@@ -4,6 +4,7 @@
   "description": "Analyzes the Radbauprogramm of Stadt Wien",
   "scripts": {
     "check": "node update.js",
+    "doc": "jsdoc -d doc/ src/*.js",
     "lint": "standard --fix *.js src/*.js"
   },
   "repository": {
@@ -26,6 +27,7 @@
     "string-similarity": "^4.0.4"
   },
   "devDependencies": {
+    "jsdoc": "^4.0.2",
     "standard": "^17.0.0"
   }
 }
