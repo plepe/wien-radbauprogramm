@@ -60,7 +60,8 @@ function loadBauprogramm (options, callback) {
 
           const entry = {}
           Array.from(tds).forEach((td, col) => {
-            entry[cols[col]] = td.textContent
+            td.innerHTML = td.innerHTML.replace(/<br>/g, '<br>\n')
+            entry[cols[col]] = td.textContent.replace(/[\t\n]+/g, '\n')
           })
 
           entry.bezirk = entry.bezirk
