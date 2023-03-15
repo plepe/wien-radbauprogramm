@@ -22,6 +22,7 @@
     "argparse": "^2.0.1",
     "async": "^3.2.4",
     "drupal-rest": "github:plepe/drupal-rest-js",
+    "fill-range": "^7.0.1",
     "iconv-lite": "^0.6.3",
     "jsdom": "^20.0.3",
     "lokijs": "^1.5.12",

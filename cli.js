@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 const fs = require('fs')
+const async = require('async')
 const ArgumentParser = require('argparse').ArgumentParser
 const Parser = require('@json2csv/plainjs').Parser
+const range = require('fill-range')
 
 const loadBauprogramm = require('./src/loadBauprogramm')
 
+const firstYear = 2003
 const options = {}
 
 const parser = new ArgumentParser({
@@ -18,7 +21,7 @@ parser.add_argument('--output', '-o', {
 })
 
 parser.add_argument('--year', '-y', {
-  help: 'Lade das Bauprogramm eines vergangenen Jahres. Für das aktuelle Jahr muss der Parameter weggelassen werden.',
+  help: 'Lade das Bauprogramm eines vergangenen Jahres, oder aller Jahre ("all"). Für das aktuelle Jahr muss der Parameter weggelassen werden.',
   default: null
 })
 
@@ -29,35 +32,65 @@ parser.add_argument('--format', '-f', {
 })
 
 const args = parser.parse_args()
-if (args.year) {
+if (args.year && args.year !== 'all') {
   options.year = args.year
 }
 
 const file = args.output
 
-loadBauprogramm(options,
-  (err, list) => {
+if (args.year === 'all') {
+  loadBauprogramm(options, (err, list) => {
     if (err) {
       console.error(err)
       process.exit(1)
     }
 
-    switch (args.format) {
-      case 'json':
-        write(file, JSON.stringify(list, null, '  '))
-        break
-      case 'csv':
-        const parser = new Parser({ withBOM: true })
-        list = array2string(list)
-        const csv = parser.parse(list)
-        write(file, csv)
-        break
-      default:
-        console.error('Invalid format')
-        process.exit(1)
+    const year = list[0].year
+    async.map(range(firstYear, year - 1),
+      (year, done) => {
+        const o = {...options, year}
+        loadBauprogramm(o, done)
+      },
+      (err, result) => {
+        if (err) {
+          console.error(err)
+          process.exit(1)
+        }
+
+        result.push(list)
+        result = result.flat()
+
+        printResult(result)
+      }
+    )
+  })
+} else {
+  loadBauprogramm(options, (err, list) => {
+    if (err) {
+      console.error(err)
+      process.exit(1)
     }
+
+    printResult(list)
+  })
+}
+
+function printResult (list) {
+  switch (args.format) {
+    case 'json':
+      write(file, JSON.stringify(list, null, '  '))
+      break
+    case 'csv':
+      const parser = new Parser({ withBOM: true })
+      list = array2string(list)
+      const csv = parser.parse(list)
+      write(file, csv)
+      break
+    default:
+      console.error('Invalid format')
+      process.exit(1)
   }
-)
+}
 
 function array2string (list) {
   return list

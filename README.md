@@ -19,6 +19,11 @@ Extract bauprogramm of 2003 as CSV:
 node cli.js --format=csv --year=2003
 ```
 
+Extract alle bauprogramme, write into 'bauprogramm.json':
+```
+node cli.js --output=bauprogramm.json --year=all
+```
+
 More options:
 ```
 node cli.js --help
