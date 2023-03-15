@@ -25,7 +25,7 @@ function init () {
     programm = db.addCollection('entries')
   }
 
-  loadBauprogramm('https://www.wien.gv.at/verkehr/radfahren/bauen/programm/',
+  loadBauprogramm({},
     (err, list) => {
       if (err) {
         console.error(err)
@@ -38,7 +38,7 @@ function init () {
           const years = firstRun ? range(firstYear, year) : getUnfinishedYears(programm, year)
           async.each(years,
             (year, done) => {
-              loadBauprogramm('https://www.wien.gv.at/verkehr/radfahren/bauen/programm/' + year + '.html',
+              loadBauprogramm({ year },
                 (err, list) => {
                   if (err) { return done(err) }
                   checkChanges(list, programm, done)

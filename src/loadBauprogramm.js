@@ -3,7 +3,12 @@ const iconv = require('iconv-lite')
 
 const cols = ['bezirk', 'ort', 'measure', 'status']
 
-module.exports = function loadBauprogramm (url, callback) {
+module.exports = function loadBauprogramm (options, callback) {
+  let url = 'https://www.wien.gv.at/verkehr/radfahren/bauen/programm/'
+  if ('year' in options) {
+    url += options.year + '.html'
+  }
+
   fetch(url)
     .then(req => req.arrayBuffer())
     .then(body => {
