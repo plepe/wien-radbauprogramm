@@ -1,8 +1,11 @@
 const JSDOM = require('jsdom').JSDOM
 const iconv = require('iconv-lite')
+const async = require('async')
+const range = require('fill-range')
 
 const strasseVomOrt = require('./strasseVomOrt')
 
+const firstYear = 2003
 const cols = ['bezirk', 'ort', 'measure', 'status']
 
 /**
@@ -18,10 +21,14 @@ const cols = ['bezirk', 'ort', 'measure', 'status']
 /**
  * Load the bauprogramm of a specific year from the Wien homepage.
  * @param {Object} options - Options
- * @param {Number} [options.year] - Load bauprogramm for a previous year. Omit for the current year.
+ * @param {Number|string} [options.year] - Load bauprogramm for a previous year. Omit for the current year. Use "all" for all years.
  * @returns {Bauprojekt[]}
  */
 function loadBauprogramm (options, callback) {
+  if (options.year === 'all') {
+    return loadAllBauprogramme(options, callback)
+  }
+
   let url = 'https://www.wien.gv.at/verkehr/radfahren/bauen/programm/'
   if ('year' in options) {
     url += options.year + '.html'
@@ -78,6 +85,36 @@ function loadBauprogramm (options, callback) {
 
       callback(null, list)
     })
+}
+
+function loadAllBauprogramme (options, callback) {
+  const o = {...options}
+  delete o.year
+  loadBauprogramm(o, (err, list) => {
+    if (err) {
+      console.error(err)
+      process.exit(1)
+    }
+
+    const year = list[0].year
+    async.map(range(firstYear, year - 1),
+      (year, done) => {
+        const o = {...options, year}
+        loadBauprogramm(o, done)
+      },
+      (err, result) => {
+        if (err) {
+          console.error(err)
+          process.exit(1)
+        }
+
+        result.push(list)
+        result = result.flat()
+
+        callback(null, result)
+      }
+    )
+  })
 }
 
 module.exports = loadBauprogramm

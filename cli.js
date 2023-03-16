@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 const fs = require('fs')
-const async = require('async')
 const ArgumentParser = require('argparse').ArgumentParser
 const Parser = require('@json2csv/plainjs').Parser
-const range = require('fill-range')
 
 const loadBauprogramm = require('./src/loadBauprogramm')
 
-const firstYear = 2003
 const options = {}
 
 const parser = new ArgumentParser({
@@ -32,48 +29,20 @@ parser.add_argument('--format', '-f', {
 })
 
 const args = parser.parse_args()
-if (args.year && args.year !== 'all') {
+if (args.year) {
   options.year = args.year
 }
 
 const file = args.output
 
-if (args.year === 'all') {
-  loadBauprogramm(options, (err, list) => {
-    if (err) {
-      console.error(err)
-      process.exit(1)
-    }
+loadBauprogramm(options, (err, list) => {
+  if (err) {
+    console.error(err)
+    process.exit(1)
+  }
 
-    const year = list[0].year
-    async.map(range(firstYear, year - 1),
-      (year, done) => {
-        const o = {...options, year}
-        loadBauprogramm(o, done)
-      },
-      (err, result) => {
-        if (err) {
-          console.error(err)
-          process.exit(1)
-        }
-
-        result.push(list)
-        result = result.flat()
-
-        printResult(result)
-      }
-    )
-  })
-} else {
-  loadBauprogramm(options, (err, list) => {
-    if (err) {
-      console.error(err)
-      process.exit(1)
-    }
-
-    printResult(list)
-  })
-}
+  printResult(list)
+})
 
 function printResult (list) {
   switch (args.format) {
