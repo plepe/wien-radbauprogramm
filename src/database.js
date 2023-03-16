@@ -8,15 +8,19 @@ class Database {
     drupal.load(this.db, (err) => {
       if (err) { return callback(err) }
 
-      this.firstRun = false
-      let programm = this.db.getCollection('entries')
-      if (programm === null) {
-        this.firstRun = true
-        programm = this.db.addCollection('entries')
-      }
-
-      callback(null, programm)
+      this._load(callback)
     })
+  }
+
+  _load (callback) {
+    this.firstRun = false
+    let programm = this.db.getCollection('entries')
+    if (programm === null) {
+      this.firstRun = true
+      programm = this.db.addCollection('entries')
+    }
+
+    callback(null, programm)
   }
 
   close (options, callback) {
