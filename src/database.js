@@ -34,6 +34,14 @@ class Database {
     callback(null, programm)
   }
 
+  update (entry, callback) {
+    if (config.drupal) {
+      drupal.update(entry, callback)
+    } else {
+      callback()
+    }
+  }
+
   close (options, callback) {
     this.db.close(callback)
   }
