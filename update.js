@@ -9,11 +9,6 @@ const getUnfinishedYears = require('./src/getUnfinishedYears')
 
 const firstYear = 2003
 
-// const db = new LokiJS('data/data.db', {
-//  autoload: true,
-//  autoloadCallback: init,
-//  autosave: true
-// })
 database.load({}, (err, _programm) => {
   programm = _programm
 

@@ -1,8 +1,19 @@
 const LokiJS = require('lokijs')
 const drupal = require('./drupal')
+const config = require('../config.json')
 
 class Database {
   load (options, callback) {
+    if (!config.drupal) {
+      this.db = new LokiJS('data/data.db', {
+        autoload: true,
+        autoloadCallback: () => this._load(callback),
+        autosave: true
+      })
+
+      return
+    }
+
     this.db = new LokiJS()
 
     drupal.load(this.db, (err) => {
