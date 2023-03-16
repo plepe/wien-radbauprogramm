@@ -48,23 +48,24 @@ module.exports = function matchDatabase (options, bauprogramm, entries, callback
     .find(vanishedOptions)
     .filter(entry => !(entry.$loki in found))
 
-  console.log(vanished)
   vanished.forEach(entry => {
-    const matches = stringSimilarity.findBestMatch(entry.ort, newProjects.map(p => p.ort))
-    console.log(matches)
-    if (matches.bestMatch.rating > 0.9) {
-      results.push({
-        bauprojekt: newProjects[matches.bestMatchIndex],
-        eintrag: entry,
-        similarity: matches.bestMatch.rating
-      })
+    if (newProjects.length) {
+      const matches = stringSimilarity.findBestMatch(entry.ort, newProjects.map(p => p.ort))
+      if (matches.bestMatch.rating > 0.9) {
+        results.push({
+          bauprojekt: newProjects[matches.bestMatchIndex],
+          eintrag: entry,
+          similarity: matches.bestMatch.rating
+        })
 
-      newProjects.splice(matches.bestMatchIndex, 1)
-    } else {
-      results.push({
-        eintrag: entry
-      })
+        newProjects.splice(matches.bestMatchIndex, 1)
+        return
+      }
     }
+
+    results.push({
+      eintrag: entry
+    })
   })
 
   newProjects.forEach(bauprojekt => results.push({ bauprojekt }))
