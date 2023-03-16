@@ -3,7 +3,7 @@ const async = require('async')
 const range = require('range').range
 
 const loadBauprogramm = require('./src/loadBauprogramm')
-const database = require('./src/database')
+const drupal = require('./src/drupal')
 const checkChanges = require('./src/checkChanges')
 const getUnfinishedYears = require('./src/getUnfinishedYears')
 
@@ -15,7 +15,7 @@ const firstYear = 2003
 //  autosave: true
 // })
 const db = new LokiJS()
-database.load(db, init)
+drupal.load(db, init)
 
 function init () {
   let firstRun = false

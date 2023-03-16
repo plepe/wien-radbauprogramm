@@ -1,7 +1,7 @@
 const async = require('async')
 const stringSimilarity = require('string-similarity')
 
-const database = require('./database')
+const drupal = require('./drupal')
 
 const checkFields = {
   status: 'Status',
@@ -37,7 +37,7 @@ module.exports = function checkChanges (list, programm, callback) {
 
       if (changed) {
         programm.update(current)
-        database.update(current, done)
+        drupal.update(current, done)
       } else {
         done()
       }
@@ -70,7 +70,7 @@ module.exports = function checkChanges (list, programm, callback) {
             compareValues(entry, newProject, year)
 
             programm.update(entry)
-            database.update(entry, done)
+            drupal.update(entry, done)
             return
           }
         }
@@ -81,7 +81,7 @@ module.exports = function checkChanges (list, programm, callback) {
 
         console.log('GONE', year, entry.ort, entry.status)
         programm.update(entry)
-        database.update(entry, done)
+        drupal.update(entry, done)
       }, done),
       // newProjects
       (done) => async.eachSeries(newProjects, (entry, done) => {
@@ -97,7 +97,7 @@ module.exports = function checkChanges (list, programm, callback) {
 
         console.log('NEW', year, entry.ort, entry.status)
         programm.insert(entry)
-        database.update(entry, done)
+        drupal.update(entry, done)
       }, done)
     ], callback)
   })
