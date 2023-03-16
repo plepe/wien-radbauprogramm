@@ -139,6 +139,10 @@ module.exports = {
       console.log('saved', result.nid[0].value)
       callback()
     })
+  },
+
+  call () {
+    return drupal
   }
 }
 
