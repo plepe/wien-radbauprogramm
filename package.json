@@ -26,7 +26,6 @@
     "iconv-lite": "^0.6.3",
     "jsdom": "^20.0.3",
     "lokijs": "^1.5.12",
-    "range": "^0.0.3",
     "string-similarity": "^4.0.4"
   },
   "devDependencies": {

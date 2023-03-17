@@ -1,6 +1,6 @@
 const LokiJS = require('lokijs')
 const async = require('async')
-const range = require('range').range
+const range = require('fill-range')
 
 const loadBauprogramm = require('./src/loadBauprogramm')
 const database = require('./src/database')
