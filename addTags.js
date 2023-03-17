@@ -3,6 +3,7 @@ const async = require('async')
 const database = require('./src/database')
 const drupal = require('./src/drupal')
 const strasseVomOrt = require('./src/strasseVomOrt')
+const parseMassnahmen = require('./src/parseMassnahmen')
 
 const tags = {}
 const tagsId = {}
@@ -44,7 +45,9 @@ function run (err) {
           currentTags = node.field_tags.map(t => t.target_id)
 
           const strassen = strasseVomOrt(entry.ort)
-          str2Tags(strassen, done)
+          const massnahmen = parseMassnahmen(entry.measure)
+
+          str2Tags([].concat(strassen, massnahmen), done)
         },
         (_ids, done) => {
           const newTags = _ids.filter(id => !currentTags.includes(id))
