@@ -57,6 +57,11 @@ function run (err) {
             )
           }
 
+          const title = entry.ort.replace(/\n/g, ' – ')
+          if (node.title[0].value !== title) {
+            update.title = [{ value: title  }]
+          }
+
           if (Object.keys(update).length) {
             update.type = node.type
             console.log(update)
