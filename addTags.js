@@ -4,28 +4,15 @@ const database = require('./src/database')
 const drupal = require('./src/drupal')
 const strasseVomOrt = require('./src/strasseVomOrt')
 const parseMassnahmen = require('./src/parseMassnahmen')
-
-const tags = {}
-const tagsId = {}
+const str2tags = require('./src/str2tags')
 
 function init () {
   async.waterfall([
     (done) => database.load({}, (err) => done(err)),
-    (done) => drupal.call().loadRestExport('rest/taxonomy?type=tags', {paginated: true}, (err, data) => {
-      if (err) { return done(err) }
-
-      data.forEach(e => {
-        tags[e.tid[0].value] = e.name[0].value
-        tagsId[e.name[0].value] = e.tid[0].value
-      })
-
-      done()
-    })
   ], run)
 }
 
 function run (err) {
-  console.log(tagsId)
   if (err) {
     console.error(err)
     process.exit(1)
@@ -47,7 +34,7 @@ function run (err) {
           const strassen = strasseVomOrt(entry.ort)
           const massnahmen = parseMassnahmen(entry.measure)
 
-          str2Tags([].concat(strassen, massnahmen), done)
+          str2tags([].concat(strassen, massnahmen), done)
         },
         (_ids, done) => {
           const newTags = _ids.filter(id => !currentTags.includes(id))
@@ -73,35 +60,6 @@ function run (err) {
         }
       ], done)
     })
-  })
-}
-
-function str2Tags (strs, callback) {
-  async.mapSeries( 
-    strs,
-    (str, done) => tagsGet(str, done),
-    callback
-  )
-}
-
-function tagsGet (value, callback) {
-  if (value in tagsId) {
-    return callback(null, tagsId[value])
-  }
-
-  const update = {
-    vid: [{ target_id: 'tags' }],
-    name: [{ value }]
-  }
-
-  console.log(update)
-  drupal.call().taxonomySave(null, update, (err, e) => {
-    if (err) { return callback(err) }
-
-    tags[e.tid[0].value] = e.name[0].value
-    tagsId[e.name[0].value] = e.tid[0].value
-
-    callback(null, tagsId[value])
   })
 }
 
