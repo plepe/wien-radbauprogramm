@@ -133,17 +133,21 @@ module.exports = {
 
     node.title = [{ value: entry.ort.replace(/\n/g, ' – ') }]
 
-    drupal.nodeSave(entry.nid, node, {}, (err, result) => {
-      if (err) { return callback(err) }
-
-      console.log('saved', result.nid[0].value)
-      callback()
-    })
+    save(entry, node, callback)
   },
 
   call () {
     return drupal
   }
+}
+
+function save (entry, node, callback) {
+  drupal.nodeSave(entry.nid, node, {}, (err, result) => {
+    if (err) { return callback(err) }
+
+    console.log('saved', result.nid[0].value)
+    callback()
+  })
 }
 
 // nodeSave(2, { type: [{target_id: 'bauprogramm'}], title: [{value: 'Foobar'}] }, {}, (err, node) => console.log(node)))
