@@ -1,6 +1,6 @@
 const async = require('async')
 
-const drupal = require('./drupal')
+const drupal = require('./convertToDrupal')
 
 let tags = null
 

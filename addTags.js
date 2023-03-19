@@ -1,7 +1,7 @@
 const async = require('async')
 
 const database = require('./src/database')
-const drupal = require('./src/drupal')
+const drupal = require('./src/convertToDrupal')
 const strasseVomOrt = require('./src/strasseVomOrt')
 const parseMassnahmen = require('./src/parseMassnahmen')
 const str2tags = require('./src/str2tags')

@@ -1,5 +1,5 @@
 const LokiJS = require('lokijs')
-const drupal = require('./drupal')
+const drupal = require('./convertToDrupal')
 const config = require('../config.json')
 
 class Database {
