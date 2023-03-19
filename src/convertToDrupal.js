@@ -2,6 +2,10 @@
 const async = require('async')
 const drupal = require('./drupal')
 
+const strasseVomOrt = require('./strasseVomOrt')
+const parseMassnahmen = require('./parseMassnahmen')
+const str2tags = require('./str2tags')
+
 const mapping = {
   bezirk: {
     field: 'field_bezirk',
@@ -130,6 +134,14 @@ module.exports = {
 
     node.title = [{ value: entry.ort.replace(/\n/g, ' – ') }]
 
+    // automatically add tags for new entries
+    if (!entry.nid) {
+      return addTags(entry, node, (err) => {
+        if (err) { return callback(err) }
+        save(entry, node, callback)
+      })
+    }
+
     save(entry, node, callback)
   }
 }
@@ -141,6 +153,21 @@ function save (entry, node, callback) {
     console.log('saved', result.nid[0].value)
     callback()
   })
+}
+
+function addTags (entry, node, callback) {
+  const strassen = strasseVomOrt(entry.ort)
+  const massnahmen = parseMassnahmen(entry.measure)
+
+  str2tags([].concat(strassen, massnahmen),
+    (err, ids) => {
+      if (err) { return callback(err) }
+
+      node.field_tags = ids.map(target_id => { return { target_id } })
+
+      callback()
+    }
+  )
 }
 
 // nodeSave(2, { type: [{target_id: 'bauprogramm'}], title: [{value: 'Foobar'}] }, {}, (err, node) => console.log(node)))
