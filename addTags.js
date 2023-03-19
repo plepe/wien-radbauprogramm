@@ -1,7 +1,7 @@
 const async = require('async')
 
 const database = require('./src/database')
-const drupal = require('./src/convertToDrupal')
+const drupal = require('./src/drupal')
 const strasseVomOrt = require('./src/strasseVomOrt')
 const parseMassnahmen = require('./src/parseMassnahmen')
 const str2tags = require('./src/str2tags')
@@ -26,7 +26,7 @@ function run (err) {
       const update = {}
 
       async.waterfall([
-        (done) => drupal.call().nodeGet(entry.nid, done),
+        (done) => drupal.nodeGet(entry.nid, done),
         (_node, done) => {
           node = _node
           currentTags = node.field_tags.map(t => t.target_id)
@@ -53,7 +53,7 @@ function run (err) {
             update.type = node.type
             console.log(update)
 
-            drupal.call().nodeSave(entry.nid, update, done)
+            drupal.nodeSave(entry.nid, update, done)
           } else {
             done()
           }

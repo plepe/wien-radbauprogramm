@@ -1,6 +1,6 @@
 const async = require('async')
 
-const drupal = require('./convertToDrupal')
+const drupal = require('./drupal')
 
 let tags = null
 
@@ -21,7 +21,7 @@ function str2tags (strs, callback) {
 }
 
 function loadTags (callback) {
-  drupal.call().loadRestExport('rest/taxonomy?type=tags', {paginated: true}, (err, data) => {
+  drupal.loadRestExport('rest/taxonomy?type=tags', {paginated: true}, (err, data) => {
     if (err) { return done(err) }
 
     tags = {}
@@ -45,7 +45,7 @@ function tagsGet (value, callback) {
   }
 
   console.log(update)
-  drupal.call().taxonomySave(null, update, (err, e) => {
+  drupal.taxonomySave(null, update, (err, e) => {
     if (err) { return callback(err) }
 
     tags[e.name[0].value] = e.tid[0].value

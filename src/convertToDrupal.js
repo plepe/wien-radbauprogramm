@@ -1,9 +1,6 @@
 /* eslint-disable camelcase */
 const async = require('async')
-const DrupalRest = require('drupal-rest')
-const config = require('../config.json')
-
-const drupal = new DrupalRest(config.drupal)
+const drupal = require('./drupal')
 
 const mapping = {
   bezirk: {
@@ -134,10 +131,6 @@ module.exports = {
     node.title = [{ value: entry.ort.replace(/\n/g, ' – ') }]
 
     save(entry, node, callback)
-  },
-
-  call () {
-    return drupal
   }
 }
 
