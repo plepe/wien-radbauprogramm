@@ -77,6 +77,10 @@ function loadBauprogramm (options, callback) {
 
           entry.year = year
 
+          if (entry.status.match(/^auf [0-9]+ verschoben$/)) {
+            entry.status = 'verschoben'
+          }
+
           entry.strassen = strasseVomOrt(entry.ort)
 
           list.push(entry)
