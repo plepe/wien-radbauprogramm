@@ -25,7 +25,8 @@ const mapping = {
     load: v => status[v.target_id],
     save: v => {
       if (!(v in status_nid)) {
-        throw new Error('Status ' + v + ' unbekannt')
+        console.error('Status ' + v + ' unbekannt')
+        return { target_id: null }
       }
 
       return { target_id: status_nid[v] }
