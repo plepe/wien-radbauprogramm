@@ -85,26 +85,7 @@ module.exports = {
         if (err) { return done(err) }
 
         const converted = data.map(node => {
-          const entry = {}
-          Object.keys(mapping).forEach(k => {
-            const d = mapping[k]
-            if (d.single) {
-              if (d.load) {
-                entry[k] = node[d.field].length ? d.load(node[d.field][0]) : null
-              } else {
-                const v = node[d.field].length ? node[d.field][0].value : null
-                entry[k] = typeof v === 'string' ? v.replace(/\r\n/g, '\n') : v
-              }
-            } else {
-              if (d.load) {
-                entry[k] = node[d.field].map(v => d.load(v))
-              } else {
-                entry[k] = node[d.field].map(v => {
-                  return typeof v.value === 'string' ? v.value.replace(/\r\n/g, '\n') : v.value
-                })
-              }
-            }
-          })
+          const entry = mapEntryFromNode(node, mapping)
           programm.insert(entry)
           return entry
         })
@@ -169,6 +150,31 @@ function addTags (entry, node, callback) {
       callback()
     }
   )
+}
+
+function mapEntryFromNode (node, mapping) {
+  const entry = {}
+  Object.keys(mapping).forEach(k => {
+    const d = mapping[k]
+    if (d.single) {
+      if (d.load) {
+        entry[k] = node[d.field].length ? d.load(node[d.field][0]) : null
+      } else {
+        const v = node[d.field].length ? node[d.field][0].value : null
+        entry[k] = typeof v === 'string' ? v.replace(/\r\n/g, '\n') : v
+      }
+    } else {
+      if (d.load) {
+        entry[k] = node[d.field].map(v => d.load(v))
+      } else {
+        entry[k] = node[d.field].map(v => {
+          return typeof v.value === 'string' ? v.value.replace(/\r\n/g, '\n') : v.value
+        })
+      }
+    }
+  })
+
+  return entry
 }
 
 // nodeSave(2, { type: [{target_id: 'bauprogramm'}], title: [{value: 'Foobar'}] }, {}, (err, node) => console.log(node)))
