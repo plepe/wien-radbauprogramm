@@ -105,7 +105,11 @@ module.exports = {
             done()
           })
         } else {
-          node = { type: [{ target_id: 'bauprogramm' }] }
+          node = {
+            type: [{ target_id: 'bauprogramm' }],
+            field_protokoll: []
+          }
+
           done()
         }
       },
@@ -130,6 +134,28 @@ module.exports = {
         delete update.nid
 
         update.title = [{ value: entry.ort.replace(/\n/g, ' – ') }]
+
+        if (entry.protokollEntry && (Object.keys(entry.protokollEntry).length > 1 || entry.protokollEntry.text.length)) {
+          const data = {
+            type: [{ target_id: 'status_aenderung' }],
+            title: [{ value: 'änderung' }],
+            field_datum: [{ value: new Date().toISOString().substr(0, 10) }]
+          }
+
+          if (entry.protokollEntry.text.length) {
+            data.body = [{
+              value: entry.protokollEntry.text.map(t => '<p>' + t + '</p>').join('\n'),
+              format: 'basic_html'
+            }]
+          }
+
+          if (entry.protokollEntry.status) {
+            data.field_status = [{ target_id: status_nid[entry.protokollEntry.status] }]
+          }
+
+          update.field_protokoll = node.field_protokoll
+          update.field_protokoll.push({ target_type: 'node', data })
+        }
 
         // automatically add tags for new entries
         if (!entry.nid) {

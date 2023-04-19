@@ -31,6 +31,7 @@ module.exports = function checkChanges (list, programm, callback) {
       })
       const current = results[0]
 
+      current.protokollEntry = {text: []}
       if (compareValues(current, entry, year)) {
         changed = true
       }
@@ -62,6 +63,9 @@ module.exports = function checkChanges (list, programm, callback) {
           if (matches.bestMatch.rating > 0.9) {
             const newProject = newProjects[matches.bestMatchIndex]
             newProjects.splice(matches.bestMatchIndex, 1)
+            entry.protokollEntry = {
+              text: ['Ort geändert von "' + entry.ort + '"']
+            }
             entry.log.push(ts.substr(0, 10) + ' Ort geändert')
             entry.ort = newProject.ort
             console.log('RENAMED', year, entry.ort, 'rating=' + matches.bestMatch.rating)
@@ -79,6 +83,10 @@ module.exports = function checkChanges (list, programm, callback) {
         }
 
         entry.log.push(ts.substr(0, 10) + ' Status geändert: ' + entry.status + ' -> verschwunden')
+        entry.protokollEntry = {
+          text: [],
+          status: 'verschwunden'
+        }
         entry.status = 'verschwunden'
         entry.lastChange = ts
 
@@ -93,6 +101,10 @@ module.exports = function checkChanges (list, programm, callback) {
         entry.log = [
           ts.substr(0, 10) + ' gefunden (' + entry.status + ')'
         ]
+        entry.protokollEntry = {
+          status: entry.status,
+          text: []
+        }
 
         if (entry.status !== 'in Planung') {
           entry.lastChange = ts
@@ -117,6 +129,12 @@ function compareValues (current, entry, year) {
   for (const field in checkFields) {
     if (current[field] !== entry[field]) {
       current.log.push(ts.substr(0, 10) + ' ' + checkFields[field] + ' geändert: ' + current[field] + ' -> ' + entry[field])
+      if (field === 'status') {
+        current.protokollEntry.status = entry.status
+      } else {
+        current.protokollEntry.text.push(checkFields[field] + ' geändert von "' + current[field] + '"')
+      }
+
       current[field] = entry[field]
       console.log('CHANGE', year, entry[field], entry.ort, entry.status)
       changed = true
