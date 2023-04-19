@@ -51,7 +51,6 @@ module.exports = function checkChanges (list, programm, callback) {
     const results = programm.find({
       year: { $eq: year },
       found: { $ne: true },
-      status: { $ne: 'verschwunden' }
     })
 
     async.waterfall([
@@ -73,6 +72,10 @@ module.exports = function checkChanges (list, programm, callback) {
             database.update(entry, done)
             return
           }
+        }
+
+        if (entry.status === 'verschwunden') {
+          return done()
         }
 
         entry.log.push(ts.substr(0, 10) + ' Status geändert: ' + entry.status + ' -> verschwunden')
