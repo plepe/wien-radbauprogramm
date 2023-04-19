@@ -95,36 +95,40 @@ module.exports = {
   },
 
   update (entry, callback) {
-    const node = { type: [{ target_id: 'bauprogramm' }] }
-    Object.keys(mapping).forEach(k => {
-      const d = mapping[k]
+    async.waterfall([
+      (done) => {
+        const node = { type: [{ target_id: 'bauprogramm' }] }
+        Object.keys(mapping).forEach(k => {
+          const d = mapping[k]
 
-      if (d.single) {
-        const value = d.save ? [d.save(entry[k])] : [{ value: entry[k] }]
-        node[d.field] = value.filter(v => v != null)
-      } else {
-        if (entry[k]) {
-          const value = d.save ? entry[k].map(v => d.save(v)) : entry[k].map(v => { return { value: v } })
-          node[d.field] = value.filter(v => v != null)
-        } else {
-          console.log(k, 'is not an array: ', entry[k])
+          if (d.single) {
+            const value = d.save ? [d.save(entry[k])] : [{ value: entry[k] }]
+            node[d.field] = value.filter(v => v != null)
+          } else {
+            if (entry[k]) {
+              const value = d.save ? entry[k].map(v => d.save(v)) : entry[k].map(v => { return { value: v } })
+              node[d.field] = value.filter(v => v != null)
+            } else {
+              console.log(k, 'is not an array: ', entry[k])
+            }
+          }
+        })
+
+        delete node.nid
+
+        node.title = [{ value: entry.ort.replace(/\n/g, ' – ') }]
+
+        // automatically add tags for new entries
+        if (!entry.nid) {
+          return addTags(entry, node, (err) => {
+            if (err) { return callback(err) }
+            save(entry, node, callback)
+          })
         }
+
+        save(entry, node, done)
       }
-    })
-
-    delete node.nid
-
-    node.title = [{ value: entry.ort.replace(/\n/g, ' – ') }]
-
-    // automatically add tags for new entries
-    if (!entry.nid) {
-      return addTags(entry, node, (err) => {
-        if (err) { return callback(err) }
-        save(entry, node, callback)
-      })
-    }
-
-    save(entry, node, callback)
+    ], callback)
   }
 }
 
