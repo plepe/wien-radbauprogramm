@@ -92,7 +92,7 @@ function loadBauprogramm (options, callback) {
 }
 
 function loadAllBauprogramme (options, callback) {
-  const o = {...options}
+  const o = { ...options }
   delete o.year
   loadBauprogramm(o, (err, list) => {
     if (err) {
@@ -103,7 +103,7 @@ function loadAllBauprogramme (options, callback) {
     const year = list[0].year
     async.map(range(firstYear, year - 1),
       (year, done) => {
-        const o = {...options, year}
+        const o = { ...options, year }
         loadBauprogramm(o, done)
       },
       (err, result) => {

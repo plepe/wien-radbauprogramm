@@ -13,7 +13,7 @@ function str2tags (strs, callback) {
     })
   }
 
-  async.mapSeries( 
+  async.mapSeries(
     strs,
     (str, done) => tagsGet(str, done),
     callback
@@ -21,7 +21,7 @@ function str2tags (strs, callback) {
 }
 
 function loadTags (callback) {
-  drupal.loadRestExport('rest/taxonomy?type=tags', {paginated: true}, (err, data) => {
+  drupal.loadRestExport('rest/taxonomy?type=tags', { paginated: true }, (err, data) => {
     if (err) { return done(err) }
 
     tags = {}
@@ -29,7 +29,6 @@ function loadTags (callback) {
       tags[e.name[0].value] = e.tid[0].value
     })
 
-    console.log(tags)
     callback()
   })
 }

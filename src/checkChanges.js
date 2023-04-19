@@ -31,7 +31,7 @@ module.exports = function checkChanges (list, programm, callback) {
       })
       const current = results[0]
 
-      current.protokollEntry = {text: []}
+      current.protokollEntry = { text: [] }
       if (compareValues(current, entry, year)) {
         changed = true
       }
@@ -51,7 +51,7 @@ module.exports = function checkChanges (list, programm, callback) {
 
     const results = programm.find({
       year: { $eq: year },
-      found: { $ne: true },
+      found: { $ne: true }
     })
 
     async.waterfall([

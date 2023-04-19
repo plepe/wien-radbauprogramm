@@ -44,7 +44,7 @@ module.exports = function matchDatabase (options, bauprogramm, entries, callback
     vanishedOptions.year = parseInt(options.year)
   }
 
-  let vanished = entries
+  const vanished = entries
     .find(vanishedOptions)
     .filter(entry => !(entry.$loki in found))
 

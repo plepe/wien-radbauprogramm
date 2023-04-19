@@ -8,7 +8,7 @@ const str2tags = require('./src/str2tags')
 
 function init () {
   async.waterfall([
-    (done) => database.load({}, (err) => done(err)),
+    (done) => database.load({}, (err) => done(err))
   ], run)
 }
 
@@ -46,7 +46,7 @@ function run (err) {
 
           const title = entry.ort.replace(/\n/g, ' – ')
           if (node.title[0].value !== title) {
-            update.title = [{ value: title  }]
+            update.title = [{ value: title }]
           }
 
           if (Object.keys(update).length) {
