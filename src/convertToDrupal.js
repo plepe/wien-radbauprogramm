@@ -95,38 +95,51 @@ module.exports = {
   },
 
   update (entry, callback) {
+    let node
+
     async.waterfall([
       (done) => {
-        const node = { type: [{ target_id: 'bauprogramm' }] }
+        if (entry.nid) {
+          drupal.nodeGet(entry.nid, (err, _node) => {
+            node = _node
+            done()
+          })
+        } else {
+          node = { type: [{ target_id: 'bauprogramm' }] }
+          done()
+        }
+      },
+      (done) => {
+        const update = { type: node.type }
         Object.keys(mapping).forEach(k => {
           const d = mapping[k]
 
           if (d.single) {
             const value = d.save ? [d.save(entry[k])] : [{ value: entry[k] }]
-            node[d.field] = value.filter(v => v != null)
+            update[d.field] = value.filter(v => v != null)
           } else {
             if (entry[k]) {
               const value = d.save ? entry[k].map(v => d.save(v)) : entry[k].map(v => { return { value: v } })
-              node[d.field] = value.filter(v => v != null)
+              update[d.field] = value.filter(v => v != null)
             } else {
               console.log(k, 'is not an array: ', entry[k])
             }
           }
         })
 
-        delete node.nid
+        delete update.nid
 
-        node.title = [{ value: entry.ort.replace(/\n/g, ' – ') }]
+        update.title = [{ value: entry.ort.replace(/\n/g, ' – ') }]
 
         // automatically add tags for new entries
         if (!entry.nid) {
-          return addTags(entry, node, (err) => {
+          return addTags(entry, update, (err) => {
             if (err) { return callback(err) }
-            save(entry, node, callback)
+            save(entry, update, callback)
           })
         }
 
-        save(entry, node, done)
+        save(entry, update, done)
       }
     ], callback)
   }
