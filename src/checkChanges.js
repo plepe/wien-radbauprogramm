@@ -60,7 +60,7 @@ module.exports = function checkChanges (list, programm, callback) {
         // try to find a new project with a similar name
         if (newProjects.length) {
           const matches = stringSimilarity.findBestMatch(entry.ort, newProjects.map(p => p.ort))
-          if (matches.bestMatch.rating > 0.9) {
+          if (matches.bestMatch.rating > 0.8) {
             const newProject = newProjects[matches.bestMatchIndex]
             newProjects.splice(matches.bestMatchIndex, 1)
             entry.protokollEntry = {
