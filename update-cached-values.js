@@ -20,9 +20,6 @@ drupal.login(err => {
 
 function run () {
   async.parallel({
-    login: (done) => {
-      drupal.login(err => done(err))
-    },
     projekte: (done) => {
       const data = []
 
