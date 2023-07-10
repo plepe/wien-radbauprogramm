@@ -22,7 +22,7 @@ module.exports = function checkChanges (list, programm, callback) {
 
     if (results.length) {
       if (results.length > 1) {
-        console.log('duplicate', results.map(r => r.nid))
+        console.log('duplicate entries for ', entry.year, entry.ort, ':', results.map(r => r.nid))
       }
 
       let changed = false
