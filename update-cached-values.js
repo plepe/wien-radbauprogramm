@@ -8,10 +8,14 @@ const drupal = new DrupalRest(config.drupal)
 
 const mapping = {
   count: 'field_anzahl_bauprojekte',
+  countRemoved: 'field_anzahl_entfernt',
   countDone: 'field_anzahl_abgeschlossen',
   lengths: 'field_laenge_aller_projekte',
+  lengthsRemoved: 'field_laenge_entfernt',
   allHaveGeo: 'field_alle_projekte_geometrie',
 }
+
+const removedStatus = ['verschoben', 'verschwunden']
 
 drupal.login(err => {
   if (err) { return console.error(err) }
@@ -36,8 +40,10 @@ function run () {
   }, (err, { projekte, programme }) => {
     const value = {
       count: {},
+      countRemoved: {},
       allHaveGeo: {},
       lengths: {},
+      lengthsRemoved: {},
       countDone: {}
     }
 
@@ -45,18 +51,30 @@ function run () {
       const year = projekt.Jahr
       if (!(year in value.count)) {
         value.count[year] = 0
+        value.countRemoved[year] = 0
         value.lengths[year] = 0
+        value.lengthsRemoved[year] = 0
         value.allHaveGeo[year] = true
         value.countDone[year] = 0
       }
+      const isRemoved = removedStatus.includes(projekt.Status) || projekt['verschoben nach']
 
-      value.count[year]++
+      if (isRemoved) {
+        value.countRemoved[year]++
+      } else {
+        value.count[year]++
+      }
+
       if (projekt.Shape) {
-        value.lengths[year] += parseFloat(projekt['Länge'])
+        if (isRemoved) {
+          value.lengthsRemoved[year] += parseFloat(projekt['Länge'])
+        } else {
+          value.lengths[year] += parseFloat(projekt['Länge'])
+        }
       } else {
         value.allHaveGeo[year] = false
       }
-      if (['fertiggestellt', 'verschwunden', 'verschoben'].includes(projekt.Status)) {
+      if (!isRemoved && ['fertiggestellt'].includes(projekt.Status)) {
         value.countDone[year]++
       }
     })
