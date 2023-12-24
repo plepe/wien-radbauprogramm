@@ -132,7 +132,7 @@ function compareValues (current, entry, year) {
       if (field === 'status') {
         current.protokollEntry.status = entry.status
       } else {
-        current.protokollEntry.text.push(checkFields[field] + ' geändert von "' + current[field] + '"')
+        current.protokollEntry.text.push(checkFields[field] + ' geändert von "' + (current[field] ?? '') + '"')
       }
 
       current[field] = entry[field]
