@@ -5,6 +5,8 @@ const drupal = require('./drupal')
 let tags = null
 
 function str2tags (strs, callback) {
+  strs = strs.filter(v => v)
+
   if (!tags && strs.length) {
     return loadTags((err) => {
       if (err) { return callback(err) }
