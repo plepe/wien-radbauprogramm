@@ -65,7 +65,7 @@ function run () {
         value.count[year]++
       }
 
-      if (projekt.Shape) {
+      if (projekt['Strecke Shape']) {
         if (isRemoved) {
           value.lengthsRemoved[year] += parseFloat(projekt['Länge'])
         } else {
