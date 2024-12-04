@@ -27,7 +27,12 @@ const strings = {
   'Busfahrstreifen': 'Busspur',
   'Busspur': 'Busspur',
   'Querung': 'Querung',
-  'Mehrzweckstreifen': 'Mehrzweckstreifen'
+  'Mehrzweckstreifen': 'Mehrzweckstreifen',
+  'Protected Bike Lane': 'Protected Bike Lane',
+  '1-Richtungs-Radweg': 'Einrichtungsradweg',
+  '2-Richtungs-Radweg': 'Zweirichtungsradweg',
+  '1-Richtungsradweg': 'Einrichtungsradweg',
+  '2-Richtungsradweg': 'Zweirichtungsradweg'
 }
 
 module.exports = function parseMassnahmen (str) {
