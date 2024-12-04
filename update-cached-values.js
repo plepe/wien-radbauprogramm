@@ -15,7 +15,7 @@ const mapping = {
   allHaveGeo: 'field_alle_projekte_geometrie',
 }
 
-const removedStatus = ['verschoben', 'verschwunden']
+const removedStatus = ['verschoben', 'abgesagt']
 
 drupal.login(err => {
   if (err) { return console.error(err) }

@@ -78,16 +78,16 @@ module.exports = function checkChanges (list, programm, callback) {
           }
         }
 
-        if (entry.status === 'verschwunden') {
+        if (entry.status === 'abgesagt') {
           return done()
         }
 
-        entry.log.push(ts.substr(0, 10) + ' Status geändert: ' + entry.status + ' -> verschwunden')
+        entry.log.push(ts.substr(0, 10) + ' Status geändert: ' + entry.status + ' -> abgesagt')
         entry.protokollEntry = {
           text: [],
-          status: 'verschwunden'
+          status: 'abgesagt'
         }
-        entry.status = 'verschwunden'
+        entry.status = 'abgesagt'
         entry.lastChange = ts
 
         console.log('GONE', year, entry.ort, entry.status)
