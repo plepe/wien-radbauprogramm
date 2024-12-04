@@ -44,6 +44,7 @@ const mapping = {
   },
   log: {
     field: 'field_log',
+    shortenText: 255,
     single: false
   },
   nid: {
@@ -128,6 +129,10 @@ module.exports = {
             } else {
               console.log(k, 'is not an array: ', entry[k])
             }
+          }
+
+          if (d.shortenText) {
+            update[d.field] = update[d.field].map(v => v.value.substr(0, d.shortenText))
           }
         })
 
